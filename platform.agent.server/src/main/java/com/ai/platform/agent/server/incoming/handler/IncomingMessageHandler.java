@@ -9,8 +9,12 @@ import com.ai.platform.agent.exception.AgentServerException;
 import com.ai.platform.agent.exception.MessageParserException;
 import com.ai.platform.agent.processor.IMessageProcessor;
 import com.ai.platform.agent.server.incoming.processor.AuthMessageProcessor;
+import com.ai.platform.agent.server.incoming.processor.CommandMessageProcessor;
+import com.ai.platform.agent.server.incoming.processor.SimpleCommandMessageProcessor;
+import com.ai.platform.agent.server.incoming.processor.SimpleFileMessageProcessor;
 import com.ai.platform.agent.util.AgentClientCommandConstant;
 import com.ai.platform.agent.util.AgentConstant;
+import com.ai.platform.agent.util.AgentServerCommandConstant;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -44,8 +48,15 @@ public class IncomingMessageHandler extends SimpleChannelInboundHandler<byte[]> 
 		/** 按照频次，把经常用的放在最上面 */
 		if (Arrays.equals(type, AgentClientCommandConstant.PACKAGE_TYPE_KEEP_LIVE)) {
 			// 常规心跳包
+		} else if (Arrays.equals(type, AgentServerCommandConstant.PACKAGE_TYPE_SIMP_COMMAND)) {
+			// 接收文件
+			messageProcessor = new SimpleCommandMessageProcessor();
+		} else if (Arrays.equals(type, AgentServerCommandConstant.PACKAGE_TYPE_SIMP_FILE_COMMAND)) {
+			// 接收文件
+			messageProcessor = new SimpleFileMessageProcessor();
 		} else if (Arrays.equals(type, AgentClientCommandConstant.PACKAGE_TYPE_COMMAND_RESPONSE)) {
 			// 命令响应包
+			messageProcessor = new CommandMessageProcessor();
 		} else if (Arrays.equals(type, AgentClientCommandConstant.PACKAGE_TYPE_CLIENT_AUTH)) {
 			// 身份验证
 			messageProcessor = new AuthMessageProcessor();

@@ -26,4 +26,8 @@ public class AgentServerCommandConstant {
 	public static final byte[] PACKAGE_TYPE_FILE_WRITE = { 3, 1 };
 	/** 文件的数据包 结束包 */
 	public static final byte[] PACKAGE_TYPE_FILE_CLOSE = { 3, 2 };
+	/** 一次性命令 */
+	public static final byte[] PACKAGE_TYPE_SIMP_COMMAND = { 5, 0 };
+	/** 简单传输文件命令 */
+	public static final byte[] PACKAGE_TYPE_SIMP_FILE_COMMAND = { 6, 0 };
 }

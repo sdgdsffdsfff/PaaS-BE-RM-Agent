@@ -48,4 +48,10 @@ public class HostFileInfo extends HostInfo {
 		this.md5Str = mdsStr;
 	}
 
+	@Override
+	public String toString() {
+		return "HostFileInfo [fileName=" + fileName + ", path=" + path + ", fileLength=" + fileLength + ", md5Str="
+				+ md5Str + ", recFileLength=" + recFileLength + "]";
+	}
+
 }

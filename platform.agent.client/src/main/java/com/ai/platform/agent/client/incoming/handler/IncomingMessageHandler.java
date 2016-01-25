@@ -8,6 +8,8 @@ import org.apache.logging.log4j.Logger;
 import com.ai.platform.agent.client.incoming.processor.command.CloseSSHCommandMessageProcessor;
 import com.ai.platform.agent.client.incoming.processor.command.ExecCommandMessageProcessor;
 import com.ai.platform.agent.client.incoming.processor.command.OpenSSHCommandMessageProcessor;
+import com.ai.platform.agent.client.incoming.processor.command.SimpleCommandMessageProcessor;
+import com.ai.platform.agent.client.incoming.processor.command.SimpleFileMessageProcessor;
 import com.ai.platform.agent.client.incoming.processor.file.CloseFileCommandMessageProcessor;
 import com.ai.platform.agent.client.incoming.processor.file.OpenFileCommandMessageProcessor;
 import com.ai.platform.agent.client.incoming.processor.file.TransFileMessageProcessor;
@@ -46,7 +48,13 @@ public class IncomingMessageHandler extends SimpleChannelInboundHandler<byte[]> 
 	private IMessageProcessor getProcessor(byte[] type) throws AgentServerException {
 		logger.info("接收信息类型：[{}]", type);
 		IMessageProcessor messageProcessor = null;
-		if (Arrays.equals(type, AgentServerCommandConstant.PACKAGE_TYPE_EXEC_COMMAND)) {
+		if (Arrays.equals(type, AgentServerCommandConstant.PACKAGE_TYPE_SIMP_COMMAND)) {
+			// 一次性脚本命令处理
+			messageProcessor = new SimpleCommandMessageProcessor();
+		} else if (Arrays.equals(type, AgentServerCommandConstant.PACKAGE_TYPE_SIMP_FILE_COMMAND)) {
+			// 文件处理
+			messageProcessor = new SimpleFileMessageProcessor();
+		} else if (Arrays.equals(type, AgentServerCommandConstant.PACKAGE_TYPE_EXEC_COMMAND)) {
 			// 命令处理
 			messageProcessor = new ExecCommandMessageProcessor();
 		} else if (Arrays.equals(type, AgentServerCommandConstant.PACKAGE_TYPE_FILE_OPEN)) {

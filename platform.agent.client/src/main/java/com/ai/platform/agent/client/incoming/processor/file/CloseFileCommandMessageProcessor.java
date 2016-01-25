@@ -9,7 +9,11 @@ import org.apache.logging.log4j.Logger;
 import com.ai.platform.agent.client.entity.UserChannelInfo;
 import com.ai.platform.agent.client.incoming.processor.AbstractFileProcessor;
 import com.ai.platform.agent.client.util.ShellChannelCollectionUtil;
+import com.ai.platform.agent.entity.Server2ClientFileMsgMVO;
 import com.ai.platform.agent.exception.AgentServerException;
+import com.ai.platform.agent.util.AgentClientCommandConstant;
+import com.ai.platform.agent.util.ByteArrayUtil;
+import com.alibaba.fastjson.JSON;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.Session;
 
@@ -40,7 +44,7 @@ public class CloseFileCommandMessageProcessor extends AbstractFileProcessor {
 
 		UserChannelInfo usci = ShellChannelCollectionUtil.userChannelMap.get(key);
 
-		usci.checkChannelIsOpen();
+//		usci.checkChannelIsOpen();
 
 		try {
 			OutputStream outputStream = usci.getOutstream();
@@ -52,6 +56,14 @@ public class CloseFileCommandMessageProcessor extends AbstractFileProcessor {
 
 			Session session = usci.getSession();
 			session.disconnect();
+
+			Server2ClientFileMsgMVO msgInfo = JSON.parseObject(message, Server2ClientFileMsgMVO.class);
+			
+			msgInfo.setResponseContent("文件传输完成");
+			
+			byte[] contentArray = ByteArrayUtil.mergeByteArray(AgentClientCommandConstant.PACKAGE_TYPE_COMMAND_RESPONSE,
+					JSON.toJSONString(msgInfo).getBytes());
+			ctx.channel().writeAndFlush(contentArray);
 
 		} catch (IOException e) {
 			logger.error("文件写入失败", e);
