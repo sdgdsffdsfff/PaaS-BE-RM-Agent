@@ -13,7 +13,7 @@
 	</properties>
 
 	<build>
-		<finalName>agent-manage-web-api</finalName>
+		<finalName>agent-web-api</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
