@@ -1,7 +1,10 @@
 package com.ai.platform.agent.web.controller;
 
+import java.util.UUID;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,6 +43,13 @@ public class AgentManageSimpCommandAPiCtl {
 	@ResponseBody
 	public String execCommand(@RequestBody String jsonStr) throws Exception {
 		SimpleCommandReqInfo commadInfo = convertJSON(jsonStr);
+		
+		String key = commadInfo.getKey();
+		if(Strings.isBlank(key)){
+			key = UUID.randomUUID().toString();
+			commadInfo.setKey(key);
+		}
+		
 		String result = null;
 		try {
 			result = commandSer.execCommand(commadInfo);
