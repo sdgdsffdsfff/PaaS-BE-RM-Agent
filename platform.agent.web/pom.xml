@@ -13,7 +13,7 @@
 	</properties>
 
 	<build>
-		<finalName>agent-manage-api-web</finalName>
+		<finalName>agent-manage-web-api</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -52,4 +52,16 @@
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
+	<distributionManagement>
+		<repository>
+			<id>releases</id>
+			<name>Internal Releases</name>
+			<url>http://10.1.228.199:18081/nexus/content/repositories/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>Snapshots</id>
+			<name>Internal Snapshots</name>
+			<url>http://10.1.228.199:18081/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>
