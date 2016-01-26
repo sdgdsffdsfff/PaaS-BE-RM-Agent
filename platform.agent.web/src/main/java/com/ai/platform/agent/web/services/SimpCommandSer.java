@@ -65,6 +65,7 @@ public class SimpCommandSer {
 		String key = commandInfo.getKey();
 		if(Strings.isBlank(key)){
 			key = UUID.randomUUID().toString();
+			commandInfo.setKey(key);
 		}
 
 		int times = 1;
