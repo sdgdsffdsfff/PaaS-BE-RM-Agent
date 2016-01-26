@@ -1,5 +1,7 @@
 package com.ai.platform.agent.web.services;
 
+import java.util.UUID;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
@@ -25,10 +27,15 @@ public class SimpCommandSer {
 	private AuthChannelInfo getAuthChannelInfo(SimpleCommandReqInfo commandInfo) throws Exception {
 
 		String aid = commandInfo.getAid();
+		String command = commandInfo.getCommand();
 		String key = aid;
 
 		if (Strings.isBlank(aid)) {
 			throw new Exception("请指定Agent标识");
+		}
+		
+		if (Strings.isBlank(command)) {
+			throw new Exception("请指定command标识");
 		}
 
 		if (!ChannelCollectionUtil.ctxMap.containsKey(key)) {
@@ -56,6 +63,9 @@ public class SimpCommandSer {
 		channel.getCtx().channel().writeAndFlush(execCommandArray);
 
 		String key = commandInfo.getKey();
+		if(Strings.isBlank(key)){
+			key = UUID.randomUUID().toString();
+		}
 
 		int times = 1;
 

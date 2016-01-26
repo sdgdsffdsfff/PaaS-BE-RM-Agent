@@ -1,5 +1,7 @@
 package com.ai.platform.agent.web.services;
 
+import java.util.UUID;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
@@ -71,6 +73,9 @@ public class SimpFileCommandSer {
 		channel.getCtx().channel().writeAndFlush(execCommandArray);
 
 		String key = commandInfo.getKey();
+		if(Strings.isBlank(key)){
+			key = UUID.randomUUID().toString();
+		}
 
 		int times = 1;
 
