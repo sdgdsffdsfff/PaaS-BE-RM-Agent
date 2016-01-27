@@ -1,4 +1,4 @@
-package com.ai.platform.agent.client.incoming.processor.command;
+package com.ai.platform.agent.client.incoming.processor.file;
 
 import java.io.File;
 import java.io.FileOutputStream;

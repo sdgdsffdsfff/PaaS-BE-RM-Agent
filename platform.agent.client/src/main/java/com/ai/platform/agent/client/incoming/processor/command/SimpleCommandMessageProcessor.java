@@ -44,7 +44,7 @@ public class SimpleCommandMessageProcessor extends AbstractSimpleCommandProcesso
 			String line = null;
 			StringBuffer sb = new StringBuffer("");
 			while ((line = read.readLine()) != null) {
-				sb.append(line);
+				sb.append(line + "\n");
 			}
 
 			msgInfo.setCode("0");

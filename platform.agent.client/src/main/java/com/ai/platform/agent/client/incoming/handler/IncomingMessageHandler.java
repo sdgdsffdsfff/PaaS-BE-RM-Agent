@@ -5,13 +5,14 @@ import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.ai.platform.agent.client.incoming.processor.NoCommandProcessor;
 import com.ai.platform.agent.client.incoming.processor.command.CloseSSHCommandMessageProcessor;
 import com.ai.platform.agent.client.incoming.processor.command.ExecCommandMessageProcessor;
 import com.ai.platform.agent.client.incoming.processor.command.OpenSSHCommandMessageProcessor;
 import com.ai.platform.agent.client.incoming.processor.command.SimpleCommandMessageProcessor;
-import com.ai.platform.agent.client.incoming.processor.command.SimpleFileMessageProcessor;
 import com.ai.platform.agent.client.incoming.processor.file.CloseFileCommandMessageProcessor;
 import com.ai.platform.agent.client.incoming.processor.file.OpenFileCommandMessageProcessor;
+import com.ai.platform.agent.client.incoming.processor.file.SimpleFileMessageProcessor;
 import com.ai.platform.agent.client.incoming.processor.file.TransFileMessageProcessor;
 import com.ai.platform.agent.exception.AgentServerException;
 import com.ai.platform.agent.exception.MessageParserException;
@@ -73,8 +74,7 @@ public class IncomingMessageHandler extends SimpleChannelInboundHandler<byte[]> 
 			// 关闭agent到服务器ssh
 			messageProcessor = new CloseSSHCommandMessageProcessor();
 		} else {
-			logger.error("未定义的操作类型：[{}]", type);
-			throw new AgentServerException("未定义的操作类型：[{" + type + "}]");
+			messageProcessor = new NoCommandProcessor();
 		}
 		return messageProcessor;
 	}
