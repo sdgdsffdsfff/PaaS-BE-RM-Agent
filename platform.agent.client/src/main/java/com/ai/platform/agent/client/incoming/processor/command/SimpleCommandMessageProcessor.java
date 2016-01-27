@@ -40,7 +40,7 @@ public class SimpleCommandMessageProcessor extends AbstractSimpleCommandProcesso
 			Process pro = Runtime.getRuntime().exec(cmds);
 			pro.waitFor();
 			InputStream in = pro.getInputStream();
-			BufferedReader read = new BufferedReader(new InputStreamReader(in, "GBK"));
+			BufferedReader read = new BufferedReader(new InputStreamReader(in, "UTF-8"));
 			String line = null;
 			StringBuffer sb = new StringBuffer("");
 			while ((line = read.readLine()) != null) {
