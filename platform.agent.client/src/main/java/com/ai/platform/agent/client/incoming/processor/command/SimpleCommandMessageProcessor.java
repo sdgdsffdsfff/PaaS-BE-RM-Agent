@@ -13,6 +13,8 @@ import com.ai.platform.agent.exception.AgentServerException;
 import com.ai.platform.agent.util.AgentServerCommandConstant;
 import com.ai.platform.agent.util.ByteArrayUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.google.common.base.Strings;
 
 import io.netty.channel.ChannelHandlerContext;
 
@@ -35,20 +37,81 @@ public class SimpleCommandMessageProcessor extends AbstractSimpleCommandProcesso
 
 		// 下面应该放到一个线程中执行
 		try {
-			 String[] cmds = { "/bin/sh", "-c", msgInfo.getCommand() }; //linux
-//			String[] cmds = { "cmd.exe", "/C", msgInfo.getCommand() }; //window
-			Process pro = Runtime.getRuntime().exec(cmds);
-			pro.waitFor();
-			InputStream in = pro.getInputStream();
-			BufferedReader read = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+			
+			/*** 命令以数组形式执行
+			
+			String []cmdArray = new String[msgInfo.getCommand().split(" ").length];
+			for( int i=0; i<cmdArray.length;i++){
+				cmdArray[i] = msgInfo.getCommand().split(" ")[i];
+			}
+			
+			if(true){
+				Process pro = Runtime.getRuntime().exec(cmdArray);
+				int exitVal = pro.waitFor();
+
+				StringBuffer stdout = new StringBuffer("");
+				StringBuffer stderr = new StringBuffer("");
+
+				JSONObject info = new JSONObject();
+
+				InputStream stdIn = pro.getInputStream();
+				InputStream errIn = pro.getErrorStream();
+				BufferedReader stdRead = new BufferedReader(new InputStreamReader(stdIn, "UTF-8"));
+				String line = null;
+				while ((line = stdRead.readLine()) != null) {
+					stdout.append(line + System.lineSeparator());
+				}
+
+				info.put("stdout", stdout.toString());
+
+				BufferedReader errRead = new BufferedReader(new InputStreamReader(errIn, "UTF-8"));
+				String errLine = null;
+				while ((errLine = errRead.readLine()) != null) {
+					stderr.append(errLine + System.lineSeparator());
+				}
+
+				String errStr = stderr.toString();
+				info.put("stderr", errStr);
+				
+				System.out.println("hhhhhhhhh" + info.toJSONString());
+			}
+			***/
+			
+			Process pro = Runtime.getRuntime().exec(msgInfo.getCommand());
+			int exitVal = pro.waitFor();
+
+			StringBuffer stdout = new StringBuffer("");
+			StringBuffer stderr = new StringBuffer("");
+
+			JSONObject info = new JSONObject();
+
+			InputStream stdIn = pro.getInputStream();
+			InputStream errIn = pro.getErrorStream();
+			BufferedReader stdRead = new BufferedReader(new InputStreamReader(stdIn, "UTF-8"));
 			String line = null;
-			StringBuffer sb = new StringBuffer("");
-			while ((line = read.readLine()) != null) {
-				sb.append(line + "\n");
+			while ((line = stdRead.readLine()) != null) {
+				stdout.append(line + System.lineSeparator());
 			}
 
-			msgInfo.setCode("0");
-			msgInfo.setMsg(sb.toString());
+			info.put("stdout", stdout.toString());
+
+			BufferedReader errRead = new BufferedReader(new InputStreamReader(errIn, "UTF-8"));
+			String errLine = null;
+			while ((errLine = errRead.readLine()) != null) {
+				stderr.append(errLine + System.lineSeparator());
+			}
+
+			String errStr = stderr.toString();
+			info.put("stderr", errStr);
+			
+			if (!Strings.isNullOrEmpty(errStr) && exitVal == 0 ) {
+				msgInfo.setCode("999999");
+			}else{
+				msgInfo.setCode("" + exitVal);
+			}
+			
+			msgInfo.setMsg(info.toJSONString());
+
 			logger.info("执行结果：{}", msgInfo);
 
 		} catch (Exception e) {
