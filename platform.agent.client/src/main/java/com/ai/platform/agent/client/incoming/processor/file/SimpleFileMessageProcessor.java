@@ -41,7 +41,7 @@ public class SimpleFileMessageProcessor extends AbstractSimpleFileProcessor {
 
 			File file = new File(filePath, msgInfo.getFileName());
 			FileOutputStream o = new FileOutputStream(file);
-			o.write(msgInfo.getContent().getBytes());
+			o.write(msgInfo.getContent().getBytes("UTF-8"));
 			o.flush();
 			o.close();
 
