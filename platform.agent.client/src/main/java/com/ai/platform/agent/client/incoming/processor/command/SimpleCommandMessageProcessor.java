@@ -37,46 +37,40 @@ public class SimpleCommandMessageProcessor extends AbstractSimpleCommandProcesso
 
 		// 下面应该放到一个线程中执行
 		try {
-			
-			/*** 命令以数组形式执行
-			
-			String []cmdArray = new String[msgInfo.getCommand().split(" ").length];
-			for( int i=0; i<cmdArray.length;i++){
-				cmdArray[i] = msgInfo.getCommand().split(" ")[i];
-			}
-			
-			if(true){
-				Process pro = Runtime.getRuntime().exec(cmdArray);
-				int exitVal = pro.waitFor();
 
-				StringBuffer stdout = new StringBuffer("");
-				StringBuffer stderr = new StringBuffer("");
+			/***
+			 * 命令以数组形式执行
+			 * 
+			 * String []cmdArray = new String[msgInfo.getCommand().split(" "
+			 * ).length]; for( int i=0; i<cmdArray.length;i++){ cmdArray[i] =
+			 * msgInfo.getCommand().split(" ")[i]; }
+			 * 
+			 * if(true){ Process pro = Runtime.getRuntime().exec(cmdArray); int
+			 * exitVal = pro.waitFor();
+			 * 
+			 * StringBuffer stdout = new StringBuffer(""); StringBuffer stderr =
+			 * new StringBuffer("");
+			 * 
+			 * JSONObject info = new JSONObject();
+			 * 
+			 * InputStream stdIn = pro.getInputStream(); InputStream errIn =
+			 * pro.getErrorStream(); BufferedReader stdRead = new
+			 * BufferedReader(new InputStreamReader(stdIn, "UTF-8")); String
+			 * line = null; while ((line = stdRead.readLine()) != null) {
+			 * stdout.append(line + System.lineSeparator()); }
+			 * 
+			 * info.put("stdout", stdout.toString());
+			 * 
+			 * BufferedReader errRead = new BufferedReader(new
+			 * InputStreamReader(errIn, "UTF-8")); String errLine = null; while
+			 * ((errLine = errRead.readLine()) != null) { stderr.append(errLine
+			 * + System.lineSeparator()); }
+			 * 
+			 * String errStr = stderr.toString(); info.put("stderr", errStr);
+			 * 
+			 * System.out.println("hhhhhhhhh" + info.toJSONString()); }
+			 ***/
 
-				JSONObject info = new JSONObject();
-
-				InputStream stdIn = pro.getInputStream();
-				InputStream errIn = pro.getErrorStream();
-				BufferedReader stdRead = new BufferedReader(new InputStreamReader(stdIn, "UTF-8"));
-				String line = null;
-				while ((line = stdRead.readLine()) != null) {
-					stdout.append(line + System.lineSeparator());
-				}
-
-				info.put("stdout", stdout.toString());
-
-				BufferedReader errRead = new BufferedReader(new InputStreamReader(errIn, "UTF-8"));
-				String errLine = null;
-				while ((errLine = errRead.readLine()) != null) {
-					stderr.append(errLine + System.lineSeparator());
-				}
-
-				String errStr = stderr.toString();
-				info.put("stderr", errStr);
-				
-				System.out.println("hhhhhhhhh" + info.toJSONString());
-			}
-			***/
-			
 			Process pro = Runtime.getRuntime().exec(msgInfo.getCommand());
 			int exitVal = pro.waitFor();
 
@@ -104,12 +98,13 @@ public class SimpleCommandMessageProcessor extends AbstractSimpleCommandProcesso
 			String errStr = stderr.toString();
 			info.put("stderr", errStr);
 			
-			if (!Strings.isNullOrEmpty(errStr) && exitVal == 0 ) {
+			// 如果异常输出有值，则为异常，code为999999
+			if (!Strings.isNullOrEmpty(errStr)) {
 				msgInfo.setCode("999999");
-			}else{
-				msgInfo.setCode("" + exitVal);
+			} else {
+				msgInfo.setCode("0");
 			}
-			
+
 			msgInfo.setMsg(info.toJSONString());
 
 			logger.info("执行结果：{}", msgInfo);
