@@ -28,8 +28,16 @@ public class AgentManageSimpCommandAPiCtl {
 	SimpCommandSer commandSer;
 
 	private SimpleCommandReqInfo convertJSON(String jsonStr) {
-		SimpleCommandReqInfo commadInfo = JSON.parseObject(jsonStr, SimpleCommandReqInfo.class);
+		SimpleCommandReqInfo commadInfo = new SimpleCommandReqInfo();
+		logger.info("jsonStr:"+jsonStr);
+		try{
+			commadInfo = JSON.parseObject(jsonStr, SimpleCommandReqInfo.class);
+		}catch(Exception e){
+			logger.info(e.getMessage());
+			
+		}
 		return commadInfo;
+		
 	}
 
 	/***
@@ -41,7 +49,7 @@ public class AgentManageSimpCommandAPiCtl {
 	 */
 	@RequestMapping(value = "/exec")
 	@ResponseBody
-	public String execCommand(@RequestBody String jsonStr) throws Exception {
+	public String execCommand( String jsonStr) throws Exception {
 		SimpleCommandReqInfo commadInfo = convertJSON(jsonStr);
 		
 		String key = commadInfo.getKey();
